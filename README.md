@@ -24,20 +24,37 @@ nero_sim_launcher/
 └── README.md
 ```
 
-## 安装到虚拟机
+## 仓库
 
-在 **Windows 主机** 把本目录拷到虚拟机，例如：
+GitHub：https://github.com/qioipe/nero_sim_launcher
+
+## 安装到虚拟机（推荐 git clone）
 
 ```bash
-# 虚拟机内
 mkdir -p ~/tools
-# 用共享文件夹 / scp / U 盘拷贝到:
-# ~/tools/nero_sim_launcher
+cd ~/tools
 
-cd ~/tools/nero_sim_launcher
+# 若以前是手动拷贝的目录，先备份再删，避免混用
+# mv nero_sim_launcher nero_sim_launcher.bak
+
+git clone https://github.com/qioipe/nero_sim_launcher.git
+cd nero_sim_launcher
 chmod +x start.sh scripts/*.sh scripts/*.py
-# 若从 Windows 拷贝出现 $'\r' 错误，执行:
-sed -i 's/\r$//' start.sh config/env.sh scripts/*.sh
+```
+
+之后在虚拟机更新：
+
+```bash
+cd ~/tools/nero_sim_launcher
+git pull
+chmod +x start.sh scripts/*.sh scripts/*.py
+```
+
+主机改代码后推送：
+
+```bash
+cd nero_sim_launcher
+git add -A && git commit -m "your message" && git push
 ```
 
 按需编辑 `config/env.sh`：
