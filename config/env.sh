@@ -10,6 +10,8 @@ export NERO_EE="${NERO_EE:-gripper}"
 # 包名：你当前编译结果是 nero_gripper_moveit_config
 export NERO_MOVEIT_PKG="${NERO_MOVEIT_PKG:-nero_gripper_moveit_config}"
 export NERO_MOVEIT_LAUNCH="${NERO_MOVEIT_LAUNCH:-demo.launch.py}"
+export NERO_TOPCAM_TOPIC="${NERO_TOPCAM_TOPIC:-/top_camera/image_raw}"
+export NERO_IMAGE_DIR="${NERO_IMAGE_DIR:-$HOME/nero_data/topdown_images}"
 
 source_ros() {
   # ROS setup.bash 会读取未定义变量；在 set -u 下必须临时关闭 nounset

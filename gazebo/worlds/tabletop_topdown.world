@@ -1,0 +1,199 @@
+<?xml version="1.0" ?>
+<sdf version="1.6">
+  <world name="tabletop_topdown">
+    <!-- 桌面顶视采集场景：桌子 + 若干物体 + 正上方相机 -->
+    <physics type="ode">
+      <max_step_size>0.001</max_step_size>
+      <real_time_update_rate>1000</real_time_update_rate>
+    </physics>
+    <gravity>0 0 -9.81</gravity>
+    <magnetic_field>6e-06 2.3e-05 -4.2e-05</magnetic_field>
+    <atmosphere type="adiabatic"/>
+
+    <scene>
+      <ambient>0.5 0.5 0.5 1</ambient>
+      <background>0.7 0.7 0.7 1</background>
+      <shadows>true</shadows>
+    </scene>
+
+    <light name="sun" type="directional">
+      <cast_shadows>true</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.85 0.85 0.8 1</diffuse>
+      <specular>0.3 0.3 0.3 1</specular>
+      <attenuation>
+        <range>1000</range>
+        <constant>0.9</constant>
+        <linear>0.01</linear>
+        <quadratic>0.001</quadratic>
+      </attenuation>
+      <direction>-0.3 0.2 -0.9</direction>
+    </light>
+
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+
+    <!-- 工作台：桌面中心约在机械臂前方 x=0.45，高度 0.75 m，请按真机桌面改 size/pose -->
+    <model name="work_table">
+      <static>true</static>
+      <pose>0.45 0 0.375 0 0 0</pose>
+      <link name="link">
+        <collision name="collision">
+          <geometry>
+            <box>
+              <size>0.80 0.60 0.75</size>
+            </box>
+          </geometry>
+        </collision>
+        <visual name="visual">
+          <geometry>
+            <box>
+              <size>0.80 0.60 0.75</size>
+            </box>
+          </geometry>
+          <material>
+            <ambient>0.72 0.62 0.48 1</ambient>
+            <diffuse>0.78 0.68 0.52 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- 桌面物体（占位，后续可换成真机对应 mesh）桌面 z≈0.75 -->
+    <model name="obj_red_cube">
+      <pose>0.40 0.08 0.79 0 0 0</pose>
+      <link name="link">
+        <inertial>
+          <mass>0.05</mass>
+          <inertia>
+            <ixx>4e-5</ixx><iyy>4e-5</iyy><izz>4e-5</izz>
+            <ixy>0</ixy><ixz>0</ixz><iyz>0</iyz>
+          </inertia>
+        </inertial>
+        <collision name="collision">
+          <geometry><box><size>0.04 0.04 0.04</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.04 0.04 0.04</size></box></geometry>
+          <material>
+            <ambient>0.8 0.1 0.1 1</ambient>
+            <diffuse>0.9 0.15 0.15 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="obj_green_cylinder">
+      <pose>0.50 -0.10 0.80 0 0 0</pose>
+      <link name="link">
+        <inertial>
+          <mass>0.06</mass>
+          <inertia>
+            <ixx>5e-5</ixx><iyy>5e-5</iyy><izz>3e-5</izz>
+            <ixy>0</ixy><ixz>0</ixz><iyz>0</iyz>
+          </inertia>
+        </inertial>
+        <collision name="collision">
+          <geometry><cylinder><radius>0.02</radius><length>0.06</length></cylinder></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><cylinder><radius>0.02</radius><length>0.06</length></cylinder></geometry>
+          <material>
+            <ambient>0.1 0.55 0.2 1</ambient>
+            <diffuse>0.15 0.7 0.25 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="obj_blue_box">
+      <pose>0.32 -0.05 0.785 0 0 0.4</pose>
+      <link name="link">
+        <inertial>
+          <mass>0.08</mass>
+          <inertia>
+            <ixx>8e-5</ixx><iyy>1e-4</iyy><izz>1.2e-4</izz>
+            <ixy>0</ixy><ixz>0</ixz><iyz>0</iyz>
+          </inertia>
+        </inertial>
+        <collision name="collision">
+          <geometry><box><size>0.06 0.04 0.03</size></box></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><box><size>0.06 0.04 0.03</size></box></geometry>
+          <material>
+            <ambient>0.1 0.2 0.7 1</ambient>
+            <diffuse>0.15 0.3 0.85 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="obj_yellow_sphere">
+      <pose>0.55 0.12 0.78 0 0 0</pose>
+      <link name="link">
+        <inertial>
+          <mass>0.04</mass>
+          <inertia>
+            <ixx>2e-5</ixx><iyy>2e-5</iyy><izz>2e-5</izz>
+            <ixy>0</ixy><ixz>0</ixz><iyz>0</iyz>
+          </inertia>
+        </inertial>
+        <collision name="collision">
+          <geometry><sphere><radius>0.025</radius></sphere></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><sphere><radius>0.025</radius></sphere></geometry>
+          <material>
+            <ambient>0.8 0.7 0.1 1</ambient>
+            <diffuse>0.95 0.85 0.15 1</diffuse>
+          </material>
+        </visual>
+      </link>
+    </model>
+
+    <!-- 顶视相机：在桌面正上方朝下。pose: x y z roll pitch yaw，pitch=90° 朝下 -->
+    <model name="topdown_camera">
+      <static>true</static>
+      <pose>0.45 0 1.55 0 1.5708 0</pose>
+      <link name="link">
+        <visual name="cam_body">
+          <pose>0 0 0.02 0 0 0</pose>
+          <geometry><box><size>0.04 0.06 0.03</size></box></geometry>
+          <material>
+            <ambient>0.1 0.1 0.1 1</ambient>
+            <diffuse>0.15 0.15 0.15 1</diffuse>
+          </material>
+        </visual>
+        <sensor name="top_camera" type="camera">
+          <always_on>true</always_on>
+          <update_rate>10</update_rate>
+          <visualize>true</visualize>
+          <camera name="top_camera">
+            <horizontal_fov>1.047</horizontal_fov>
+            <image>
+              <width>640</width>
+              <height>480</height>
+              <format>R8G8B8</format>
+            </image>
+            <clip>
+              <near>0.05</near>
+              <far>8.0</far>
+            </clip>
+          </camera>
+          <plugin name="topdown_camera_controller" filename="libgazebo_ros_camera.so">
+            <ros>
+              <namespace>top_camera</namespace>
+            </ros>
+            <camera_name>top_camera</camera_name>
+            <frame_name>top_camera_optical_frame</frame_name>
+            <hack_baseline>0.0</hack_baseline>
+            <min_depth>0.05</min_depth>
+            <max_depth>8.0</max_depth>
+          </plugin>
+        </sensor>
+      </link>
+    </model>
+  </world>
+</sdf>

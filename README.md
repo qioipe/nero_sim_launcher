@@ -6,21 +6,21 @@
 - MoveIt 规划仿真（`nero_gripper_moveit_config`）  
 - 录制 `/joint_states`  
 - bag → CSV（`q/qd/qdd`）  
-- 关节角曲线图  
+- 关节角曲线图
+- **Gazebo 顶视相机采图**（桌面场景，供视觉模型训练）
 
 ## 目录
 
 ```text
 nero_sim_launcher/
-├── start.sh                 # 一键入口（菜单 / 子命令）
-├── config/env.sh            # 路径与包名配置
+├── start.sh
+├── config/env.sh
+├── gazebo/worlds/tabletop_topdown.world
 ├── scripts/
-│   ├── check_env.sh
-│   ├── start_rviz.sh
-│   ├── start_moveit.sh
-│   ├── record_joints.sh
-│   ├── bag_to_csv.py
-│   └── plot_q.py
+│   ├── ...
+│   ├── start_gazebo_topcam.sh
+│   ├── collect_topdown_images.py
+│   └── randomize_table_objects.py
 └── README.md
 ```
 
@@ -80,6 +80,38 @@ cd ~/tools/nero_sim_launcher
 ./start.sh
 ```
 
+### 顶视相机采图（Gazebo）
+
+先装：
+
+```bash
+sudo apt install -y ros-humble-gazebo-ros-pkgs ros-humble-gazebo-ros2-control ros-humble-cv-bridge
+```
+
+虚拟机内存建议 ≥8GB。
+
+```bash
+# 终端 A：开场景（桌子 + 彩色物体 + 顶视相机）
+./start.sh gazebo-cam
+
+# 终端 B：采 50 张 PNG
+./start.sh collect 50
+
+# 可选：随机挪动物体再采
+./start.sh randomize 30
+```
+
+带 Nero 机械臂（更吃内存）：
+
+```bash
+./start.sh gazebo-cam arm
+```
+
+图片默认写到 `~/nero_data/topdown_images/<时间戳>/frame_xxxxx.png`。
+
+**对齐真实环境**：用尺子量桌面长宽高、相机离桌高度、视野里有哪些物体，改  
+`gazebo/worlds/tabletop_topdown.world` 里 `work_table` 的 `size/pose` 和 `topdown_camera` 的高度。占位物体可换成真机对应的 mesh。仿真图只能作预训练/域随机；上真机仍需少量真实顶视图做微调。
+
 ### 常用一键命令
 
 ```bash
@@ -87,6 +119,9 @@ cd ~/tools/nero_sim_launcher
 ./start.sh moveit         # 启动 MoveIt（主流程）
 ./start.sh rviz           # 仅 RViz 显示
 ./start.sh record         # 另开终端录 bag（MoveIt 先开着）
+./start.sh gazebo-cam     # Gazebo 顶视桌面
+./start.sh collect 50     # 保存顶视 PNG
+./start.sh randomize 20   # 随机摆物体
 ./start.sh convert ~/nero_data/nero_bag_20260101_120000
 ./start.sh plot ~/nero_data/nero_bag_xxx_q.csv
 ```

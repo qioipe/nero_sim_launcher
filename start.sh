@@ -7,6 +7,9 @@
 #   ./start.sh record
 #   ./start.sh convert <bag目录>
 #   ./start.sh plot <csv>
+#   ./start.sh gazebo-cam [arm]
+#   ./start.sh collect [张数]
+#   ./start.sh randomize [轮数]
 #   ./start.sh check
 
 set -eo pipefail
@@ -52,12 +55,31 @@ run_cmd() {
       fi
       python3 "${SCRIPTS}/plot_q.py" "$@"
       ;;
+    gazebo-cam|topcam)
+      bash "${SCRIPTS}/start_gazebo_topcam.sh" "${1:-0}"
+      ;;
+    collect)
+      # shellcheck disable=SC1091
+      source "${ROOT}/config/env.sh"
+      source_ros
+      count="${1:-50}"
+      python3 "${SCRIPTS}/collect_topdown_images.py" \
+        --auto-topic \
+        -n "${count}" \
+        -o "${NERO_IMAGE_DIR}/$(date +%Y%m%d_%H%M%S)"
+      ;;
+    randomize)
+      # shellcheck disable=SC1091
+      source "${ROOT}/config/env.sh"
+      source_ros
+      python3 "${SCRIPTS}/randomize_table_objects.py" --rounds "${1:-20}"
+      ;;
     help|-h|--help)
-      sed -n '2,12p' "$0"
+      sed -n '2,16p' "$0"
       ;;
     *)
       echo "未知命令: $cmd"
-      echo "支持: check | rviz | moveit | record | convert | plot"
+      echo "支持: check | rviz | moveit | record | convert | plot | gazebo-cam | collect | randomize"
       exit 1
       ;;
   esac
@@ -78,9 +100,12 @@ echo "  3) 启动 MoveIt 规划仿真   ← 常用"
 echo "  4) 录制 /joint_states"
 echo "  5) bag 转 CSV"
 echo "  6) 绘制关节角曲线"
+echo "  7) 启动 Gazebo 顶视桌面场景（采图）"
+echo "  8) 采集顶视图片"
+echo "  9) 随机摆放桌面物体"
 echo "  0) 退出"
 echo "======================================"
-read -r -p "请选择 [0-6]: " choice
+read -r -p "请选择 [0-9]: " choice
 
 case "$choice" in
   1) run_cmd check ;;
@@ -95,6 +120,12 @@ case "$choice" in
     read -r -p "csv 路径: " csv
     run_cmd plot "$csv"
     ;;
+  7) run_cmd gazebo-cam ;;
+  8)
+    read -r -p "采集张数 [50]: " n
+    run_cmd collect "${n:-50}"
+    ;;
+  9) run_cmd randomize ;;
   0) exit 0 ;;
   *) echo "无效选项"; exit 1 ;;
 esac
