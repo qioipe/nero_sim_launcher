@@ -8,6 +8,7 @@
 - bag → CSV（`q/qd/qdd`）  
 - 关节角曲线图
 - **Gazebo 顶视相机采图**（桌面场景，供视觉模型训练）
+- **Gazebo + Nero 机械臂可视化**（`./start.sh gazebo-arm`）
 
 ## 目录
 
@@ -101,10 +102,12 @@ sudo apt install -y ros-humble-gazebo-ros-pkgs ros-humble-gazebo-ros2-control ro
 ./start.sh randomize 30
 ```
 
-带 Nero 机械臂（更吃内存）：
+带 Nero 机械臂可视化（Gazebo + MoveIt + RViz，更吃内存）：
 
 ```bash
-./start.sh gazebo-cam arm
+./start.sh gazebo-arm
+# 等价于: ./start.sh gazebo-cam arm
+# 菜单选 8 也可
 ```
 
 图片默认写到 `~/nero_data/topdown_images/<时间戳>/frame_xxxxx.png`。
@@ -119,7 +122,8 @@ sudo apt install -y ros-humble-gazebo-ros-pkgs ros-humble-gazebo-ros2-control ro
 ./start.sh moveit         # 启动 MoveIt（主流程）
 ./start.sh rviz           # 仅 RViz 显示
 ./start.sh record         # 另开终端录 bag（MoveIt 先开着）
-./start.sh gazebo-cam     # Gazebo 顶视桌面
+./start.sh gazebo-cam     # Gazebo 顶视桌面（无臂）
+./start.sh gazebo-arm     # Gazebo + Nero 机械臂可视化
 ./start.sh collect 50     # 保存顶视 PNG
 ./start.sh randomize 20   # 随机摆物体
 ./start.sh convert ~/nero_data/nero_bag_20260101_120000

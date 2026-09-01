@@ -7,7 +7,8 @@
 #   ./start.sh record
 #   ./start.sh convert <bag目录>
 #   ./start.sh plot <csv>
-#   ./start.sh gazebo-cam [arm]
+#   ./start.sh gazebo-cam       # 仅顶视桌面
+#   ./start.sh gazebo-arm       # Gazebo + Nero 机械臂（可视化）
 #   ./start.sh collect [张数]
 #   ./start.sh randomize [轮数]
 #   ./start.sh check
@@ -58,6 +59,10 @@ run_cmd() {
     gazebo-cam|topcam)
       bash "${SCRIPTS}/start_gazebo_topcam.sh" "${1:-0}"
       ;;
+    gazebo-arm|gazebo)
+      # 带 Nero 机械臂的 Gazebo 可视化（顶视世界 + MoveIt）
+      bash "${SCRIPTS}/start_gazebo_topcam.sh" arm
+      ;;
     collect)
       # shellcheck disable=SC1091
       source "${ROOT}/config/env.sh"
@@ -79,7 +84,7 @@ run_cmd() {
       ;;
     *)
       echo "未知命令: $cmd"
-      echo "支持: check | rviz | moveit | record | convert | plot | gazebo-cam | collect | randomize"
+      echo "支持: check | rviz | moveit | record | convert | plot | gazebo-cam | gazebo-arm | collect | randomize"
       exit 1
       ;;
   esac
@@ -100,12 +105,13 @@ echo "  3) 启动 MoveIt 规划仿真   ← 常用"
 echo "  4) 录制 /joint_states"
 echo "  5) bag 转 CSV"
 echo "  6) 绘制关节角曲线"
-echo "  7) 启动 Gazebo 顶视桌面场景（采图）"
-echo "  8) 采集顶视图片"
-echo "  9) 随机摆放桌面物体"
+echo "  7) 启动 Gazebo 顶视桌面（无臂，采图）"
+echo "  8) 启动 Gazebo + Nero 机械臂（可视化）"
+echo "  9) 采集顶视图片"
+echo "  a) 随机摆放桌面物体"
 echo "  0) 退出"
 echo "======================================"
-read -r -p "请选择 [0-9]: " choice
+read -r -p "请选择 [0-9/a]: " choice
 
 case "$choice" in
   1) run_cmd check ;;
@@ -121,11 +127,12 @@ case "$choice" in
     run_cmd plot "$csv"
     ;;
   7) run_cmd gazebo-cam ;;
-  8)
+  8) run_cmd gazebo-arm ;;
+  9)
     read -r -p "采集张数 [50]: " n
     run_cmd collect "${n:-50}"
     ;;
-  9) run_cmd randomize ;;
+  a|A) run_cmd randomize ;;
   0) exit 0 ;;
   *) echo "无效选项"; exit 1 ;;
 esac
